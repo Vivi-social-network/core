@@ -7,7 +7,11 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-func New(cfg Config) *zap.Logger {
+type Logger struct {
+	*zap.Logger
+}
+
+func New(cfg Config) Logger {
 	encoderCfg := zap.NewProductionEncoderConfig()
 	encoderCfg.TimeKey = "timestamp"
 	encoderCfg.EncodeTime = zapcore.ISO8601TimeEncoder
@@ -31,5 +35,5 @@ func New(cfg Config) *zap.Logger {
 		},
 	}
 
-	return zap.Must(zapConfig.Build())
+	return Logger{Logger: zap.Must(zapConfig.Build())}
 }
