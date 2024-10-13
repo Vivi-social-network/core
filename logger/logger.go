@@ -1,39 +1,21 @@
 package logger
 
 import (
+	"log/slog"
 	"os"
-
-	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
 )
 
 type Logger struct {
-	*zap.Logger
+	*slog.Logger
 }
 
 func New(cfg Config) *Logger {
-	encoderCfg := zap.NewProductionEncoderConfig()
-	encoderCfg.TimeKey = "timestamp"
-	encoderCfg.EncodeTime = zapcore.ISO8601TimeEncoder
-
-	zapConfig := zap.Config{
-		Level:             zap.NewAtomicLevelAt(zapcore.Level(cfg.Level)),
-		Development:       false,
-		DisableCaller:     false,
-		DisableStacktrace: false,
-		Sampling:          nil,
-		Encoding:          "json",
-		EncoderConfig:     encoderCfg,
-		OutputPaths: []string{
-			"stderr",
-		},
-		ErrorOutputPaths: []string{
-			"stderr",
-		},
-		InitialFields: map[string]interface{}{
-			"pid": os.Getpid(),
-		},
+	opts := &slog.HandlerOptions{
+		Level: cfg.Level,
 	}
 
-	return &Logger{Logger: zap.Must(zapConfig.Build())}
+	handler := slog.NewJSONHandler(os.Stdout, opts)
+	logger := slog.New(handler)
+
+	return &Logger{Logger: logger}
 }

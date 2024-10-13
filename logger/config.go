@@ -1,5 +1,7 @@
 package logger
 
+import "log/slog"
+
 type Config struct {
-	Level int8 `yaml:"level"`
+	Level slog.Level `yaml:"level"`
 }
