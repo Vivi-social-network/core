@@ -11,7 +11,7 @@ type Logger struct {
 
 func New(cfg Config) *Logger {
 	opts := &slog.HandlerOptions{
-		Level: cfg.Level,
+		Level: slog.Level(cfg.Level),
 	}
 
 	handler := slog.NewJSONHandler(os.Stdout, opts)
